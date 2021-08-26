@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
 const http = require('http');
-const { chdir } = require('process');
 const server = http.createServer(app); // I assume that "http server" adds modules that the express "app handler" might not come with regularly
+
+//====MIDDLEWARE
+app.use(express.static(__dirname + "/public"));
 
 const { Server } = require('socket.io'); // getting the class Server out of socket.io
 const io = new Server(server);
