@@ -3,8 +3,13 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app); // I assume that "http server" adds modules that the express "app handler" might not come with regularly
 
+//===FAKE DB
+
+const db = require("./models/fakeDb")
+
 //====MIDDLEWARE
 app.use(express.static(__dirname + "/public"));
+app.use(express.json()); //-JSON parsing
 
 const { Server } = require('socket.io'); // getting the class Server out of socket.io
 const io = new Server(server);
@@ -17,7 +22,13 @@ app.get('/', (req, res) => {
 
 
 io.on('connection', (socket) =>{
-  console.log(socket.id + "user logged in")
+  console.log(socket.id + "user logged in");
+  socket.emit('user.connected', {channels: db});// sends only to the connecting socket
+
+  socket.on('new user', (userName) => {//when server receives message that new user name has being establish
+    console.log(socket.id);
+    socket.broadcast.emit('new user', userName); // broadcasts for remaining sockets the new user
+  })
 
   socket.on('chat message', (msg) => {//when server receives message
     io.emit('chat message', msg);// sends the message to everyone else
