@@ -63,8 +63,12 @@
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         if(input.value){
-            socket.emit('chat message', input.value);
-            input.value = '';
+            if(localStorage.uif){
+                let userInfo = {msg: input.value, ...JSON.parse(localStorage.uif)};
+                console.log(userInfo);
+                socket.emit('chat message', userInfo);
+                input.value = '';
+            }
         } 
     });
 
@@ -80,7 +84,7 @@
                 let name = json[0];
                 let userName = `${colorName} ${name}`   //putting both fetches together
                 let userInfo = {hexCode : colorHex, userName : userName}
-                // TODO here it needs to save into jwt info like; socket.id, userName, color hexcode
+                //it saves info into jwt and local storage; info like: socket.id, userName, color hexcode
                 localStorage.setItem("uif", JSON.stringify(userInfo));//saves a cookie with accessible info
                 AuthModel.register({socketId : id.socketId, ...userInfo}).then( json => {
                     console.log(json);
@@ -116,9 +120,13 @@
         window.scrollTo(0, document.body.scrollHeight);//keeps page at the bottom
     })
 
-    socket.on('chat message', function (msg) {
-        var item = document.createElement('li');
-        item.textContent = msg;
+    socket.on('chat message', function (userMsg) {
+        let item = document.createElement('li');
+        let subItem = document.createElement('span');
+        subItem.textContent = `-${userMsg.userName}`;
+        subItem.style.color = userMsg.hexCode;
+        item.textContent = userMsg.msg;
+        item.appendChild(subItem);
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);//keeps page at the bottom
     })
