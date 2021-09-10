@@ -7,7 +7,7 @@ const server = http.createServer(app); // I assume that "http server" adds modul
 
 //===FAKE DB
 
-const db = require("./models/fakeDb")
+const db = require("./models")
 
 //====MIDDLEWARE
 app.use(express.static(__dirname + "/public"));
@@ -26,6 +26,12 @@ app.get('/', (req, res) => {
 //======ROUTES
 
 app.post('/register', (req, res) => {
+
+  db.User.create(req.body, (err, savedUser) => {
+    if (err) console.log("Error registering new User: ", err)
+
+    console.log(savedUser);
+  })
 
   /* this doesnt work because it is happening outside of the io so it doesnt know the socket
   {
@@ -52,8 +58,8 @@ app.post('/register', (req, res) => {
 
 
 io.on('connection', (socket) =>{
-  console.log(socket.id + "user logged in");
-  /* socket.emit('user.connected', {channels: db});// sends only to the connecting socket */
+  console.log(socket.id + " user logged in");
+  // TODO send all already connected users if any
   socket.emit('user.connected', {socketId: socket.id});// sends only to the connecting socket
 
   socket.on('new user', (userInfo) => {//when server receives message that new user name has being establish
@@ -67,7 +73,12 @@ io.on('connection', (socket) =>{
   });
 
   socket.on('disconnect', () =>{
-    console.log("user logged out")
+    db.User.findOneAndDelete({socketId: socket.id}, (err, deletedUser) =>{
+      if(err) console.log("Error deleting User: ", err);
+
+      console.log(deletedUser.userName, " logged out")
+      io.emit('user.disconnected', (deletedUser.userName));
+    })
   });
 });
 
