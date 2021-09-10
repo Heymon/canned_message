@@ -14,5 +14,4 @@ mongoose.connect(connectingString, configOptions)
 
 module.exports = {
     User: require("./User"),
-    FakeDb: require("./fakeDb"),
 }
