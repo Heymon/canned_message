@@ -60,6 +60,9 @@
     var input = document.getElementById('input');
     console.log(input);
 
+    let usersList = document.getElementById('onlineUsers');
+    console.log(usersList);
+
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         if(input.value){
@@ -83,7 +86,7 @@
                 console.log(json[0]);
                 let name = json[0];
                 let userName = `${colorName} ${name}`   //putting both fetches together
-                let userInfo = {hexCode : colorHex, userName : userName}
+                let userInfo = {colorHex, userName : userName}
                 //it saves info into jwt and local storage; info like: socket.id, userName, color hexcode
                 localStorage.setItem("uif", JSON.stringify(userInfo));//saves a cookie with accessible info
                 AuthModel.register({socketId : id.socketId, ...userInfo}).then( json => {
@@ -91,6 +94,7 @@
                     localStorage.setItem("uid", JSON.stringify(json.signedJwt));//sets the jwt
                     console.log(JSON.parse(localStorage.uif));       
                     
+                    // TODO change the li adding into a separated function
                     // sets name on page
                     let item = document.createElement('li');
                     let subItem = document.createElement('span');
@@ -107,24 +111,43 @@
         })
     })
 
+    socket.on('user.disconnected', function (userName) {
+        console.log("user disconnected " + userName);
+        let onlineUsers = document.getElementById('onlineUsers').children;
+        console.log(onlineUsers);
+        for (let index = 0; index < onlineUsers.length; index++) {
+            if (onlineUsers[index].textContent === userName) {
+                onlineUsers[index].remove();
+                break;
+            }
+        }
+        
+    })
+
     socket.on('new user', function (userInfo) {
         console.log(userInfo);
+
         //sends hex color and user name to other sockets
         let item = document.createElement('li');
         let subItem = document.createElement('span');
-        subItem.textContent = `${userInfo.userName}`;
-        subItem.style.color = userInfo.hexCode;
+        subItem.textContent = userInfo.userName;
+        subItem.style.color = userInfo.colorHex;
         item.textContent = ' has connected';
         item.prepend(subItem);
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);//keeps page at the bottom
+
+        let item2 = document.createElement('li');
+        item2.textContent = userInfo.userName;
+        item2.style.color = userInfo.colorHex;
+        usersList.appendChild(item2);//add the user to the list of online users on client
     })
 
     socket.on('chat message', function (userMsg) {
         let item = document.createElement('li');
         let subItem = document.createElement('span');
         subItem.textContent = `-${userMsg.userName}`;
-        subItem.style.color = userMsg.hexCode;
+        subItem.style.color = userMsg.colorHex;
         item.textContent = userMsg.msg;
         item.appendChild(subItem);
         messages.appendChild(item);
