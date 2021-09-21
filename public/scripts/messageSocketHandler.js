@@ -48,7 +48,25 @@
           color += letters[Math.floor(Math.random() * 16)];
         }
         return color;
-      }
+    }
+
+    const addMessage = (msg, userInfo, isPrepend) => {
+        // sets name on page
+        let item = document.createElement('li');
+        let subItem = document.createElement('span');
+        subItem.textContent = `${userInfo.userName}`;
+        subItem.style.color = userInfo.colorHex;
+        item.textContent = msg;
+
+        if (!isPrepend) {
+            item.appendChild(subItem);
+            messages.appendChild(item);
+        } else {
+            item.prepend(subItem);
+            messages.appendChild(item);
+        } 
+        window.scrollTo(0, document.body.scrollHeight);//keeps page at the bottom
+    }
 
 
     var socket = io();
@@ -67,9 +85,9 @@
         e.preventDefault();
         if(input.value){
             if(localStorage.uif){
-                let userInfo = {msg: input.value, ...JSON.parse(localStorage.uif)};
-                console.log(userInfo);
-                socket.emit('chat message', userInfo);
+                let userMsg = {msg: input.value+" -", userInfo:{...JSON.parse(localStorage.uif)}};
+                console.log(userMsg);
+                socket.emit('chat message', userMsg);
                 input.value = '';
             }
         } 
@@ -94,16 +112,8 @@
                     localStorage.setItem("uid", JSON.stringify(json.signedJwt));//sets the jwt
                     console.log(JSON.parse(localStorage.uif));       
                     
-                    // TODO change the li adding into a separated function
                     // sets name on page
-                    let item = document.createElement('li');
-                    let subItem = document.createElement('span');
-                    subItem.textContent = `${userName}`;
-                    subItem.style.color = colorHex;
-                    item.textContent = 'You are connected as ';
-                    item.appendChild(subItem);
-                    messages.appendChild(item);
-                    window.scrollTo(0, document.body.scrollHeight);//keeps page at the bottom
+                    addMessage('You are connected as ', {userName, colorHex}, false)
                     socket.emit('new user', userInfo); //sends message to server that name has been establish
                 })
             })
@@ -125,17 +135,9 @@
     })
 
     socket.on('new user', function (userInfo) {
-        console.log(userInfo);
-
-        //sends hex color and user name to other sockets
-        let item = document.createElement('li');
-        let subItem = document.createElement('span');
-        subItem.textContent = userInfo.userName;
-        subItem.style.color = userInfo.colorHex;
-        item.textContent = ' has connected';
-        item.prepend(subItem);
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);//keeps page at the bottom
+        // console.log(userInfo);
+        //display on DOM new user connected
+        addMessage(' has connected', userInfo, true);
 
         let item2 = document.createElement('li');
         item2.textContent = userInfo.userName;
@@ -144,12 +146,6 @@
     })
 
     socket.on('chat message', function (userMsg) {
-        let item = document.createElement('li');
-        let subItem = document.createElement('span');
-        subItem.textContent = `-${userMsg.userName}`;
-        subItem.style.color = userMsg.colorHex;
-        item.textContent = userMsg.msg;
-        item.appendChild(subItem);
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);//keeps page at the bottom
+        //adds new message to DOM
+        addMessage(userMsg.msg, userMsg.userInfo, false)
     })
