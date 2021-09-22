@@ -116,6 +116,12 @@
 
     socket.on('user.connected', (serverData) =>{//once connection is received from server
         console.log(serverData);
+
+        //display online current users
+        serverData.usersList.forEach((curValue) => {
+            updateUsersList({userName: curValue.userName, colorHex: curValue.colorHex}, true);
+        });
+
         //it sets user name
         ApiRequest.requestColor().then(json => { //by fetching random color from API
             console.log(json.name.value);
@@ -143,7 +149,8 @@
     })
 
     socket.on('user.disconnected', function (userInfo) {
-        updateUsersList(userInfo, false);  
+        updateUsersList(userInfo, false);
+        addMessage(' has disconnected', userInfo, true);  
     })
 
     socket.on('new user', function (userInfo) {

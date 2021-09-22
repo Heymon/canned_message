@@ -59,11 +59,10 @@ app.post('/register', (req, res) => {
 
 io.on('connection', (socket) =>{
   console.log(socket.id + " user logged in");
-  // TODO send all already connected users if any
   db.User.find({}, (err, foundUsers) => {
     if (err) console.log("Error finding Users: ", err)
 
-    console.log(foundUsers);
+    // console.log(foundUsers);
     socket.emit('user.connected', {socketId: socket.id, usersList: foundUsers})
   });
   //socket.emit('user.connected', {socketId: socket.id});// sends only to the connecting socket
