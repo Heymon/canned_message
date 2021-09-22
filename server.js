@@ -60,7 +60,13 @@ app.post('/register', (req, res) => {
 io.on('connection', (socket) =>{
   console.log(socket.id + " user logged in");
   // TODO send all already connected users if any
-  socket.emit('user.connected', {socketId: socket.id});// sends only to the connecting socket
+  db.User.find({}, (err, foundUsers) => {
+    if (err) console.log("Error finding Users: ", err)
+
+    console.log(foundUsers);
+    socket.emit('user.connected', {socketId: socket.id, usersList: foundUsers})
+  });
+  //socket.emit('user.connected', {socketId: socket.id});// sends only to the connecting socket
 
   socket.on('new user', (userInfo) => {//when server receives message that new user name has being establish
     console.log(socket.id);
@@ -77,7 +83,7 @@ io.on('connection', (socket) =>{
       if(err) console.log("Error deleting User: ", err);
 
       console.log(deletedUser.userName, " logged out")
-      io.emit('user.disconnected', (deletedUser.userName));
+      io.emit('user.disconnected', (deletedUser));
     })
   });
 });

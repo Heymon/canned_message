@@ -68,6 +68,27 @@
         window.scrollTo(0, document.body.scrollHeight);//keeps page at the bottom
     }
 
+    const updateUsersList = (userInfo, isConnecting) => {
+
+        if (isConnecting) {
+            console.log("user connected " + userInfo.userName);
+            const item2 = document.createElement('li');
+            item2.textContent = userInfo.userName;
+            item2.style.color = userInfo.colorHex;
+            usersList.appendChild(item2);//add the user to the list of online users on client
+        } else {
+            console.log("user disconnected " + userInfo.userName);
+            let onlineUsers = document.getElementById('onlineUsers').children;
+            console.log(onlineUsers);
+            for (let index = 0; index < onlineUsers.length; index++) {
+                if (onlineUsers[index].textContent === userInfo.userName) {
+                    onlineUsers[index].remove();
+                    break;
+                }
+            }
+        }
+    }
+
 
     var socket = io();
         
@@ -93,8 +114,8 @@
         } 
     });
 
-    socket.on('user.connected', (id) =>{//once connection is received from server
-        console.log(id);
+    socket.on('user.connected', (serverData) =>{//once connection is received from server
+        console.log(serverData);
         //it sets user name
         ApiRequest.requestColor().then(json => { //by fetching random color from API
             console.log(json.name.value);
@@ -107,7 +128,7 @@
                 let userInfo = {colorHex, userName : userName}
                 //it saves info into jwt and local storage; info like: socket.id, userName, color hexcode
                 localStorage.setItem("uif", JSON.stringify(userInfo));//saves a cookie with accessible info
-                AuthModel.register({socketId : id.socketId, ...userInfo}).then( json => {
+                AuthModel.register({socketId : serverData.socketId, ...userInfo}).then( json => {
                     console.log(json);
                     localStorage.setItem("uid", JSON.stringify(json.signedJwt));//sets the jwt
                     console.log(JSON.parse(localStorage.uif));       
@@ -121,28 +142,15 @@
         })
     })
 
-    socket.on('user.disconnected', function (userName) {
-        console.log("user disconnected " + userName);
-        let onlineUsers = document.getElementById('onlineUsers').children;
-        console.log(onlineUsers);
-        for (let index = 0; index < onlineUsers.length; index++) {
-            if (onlineUsers[index].textContent === userName) {
-                onlineUsers[index].remove();
-                break;
-            }
-        }
-        
+    socket.on('user.disconnected', function (userInfo) {
+        updateUsersList(userInfo, false);  
     })
 
     socket.on('new user', function (userInfo) {
         // console.log(userInfo);
         //display on DOM new user connected
         addMessage(' has connected', userInfo, true);
-
-        let item2 = document.createElement('li');
-        item2.textContent = userInfo.userName;
-        item2.style.color = userInfo.colorHex;
-        usersList.appendChild(item2);//add the user to the list of online users on client
+        updateUsersList(userInfo, true);
     })
 
     socket.on('chat message', function (userMsg) {
