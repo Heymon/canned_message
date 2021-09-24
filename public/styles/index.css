@@ -1,6 +1,15 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
 body{ 
+    height: 100vh;
+    display: grid;
+    grid-template-rows: minmax(81vh, 95vh) 3rem;
     margin: 0; 
-    padding-bottom: 3rem; 
+    /* padding-bottom: 3rem;  */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
 }
 
@@ -13,7 +22,7 @@ body{
 #form{ 
     background: rgba(0, 0, 0, 0.15); 
     padding: 0.25rem; 
-    position: fixed; 
+    /* position: fixed;  */
     bottom: 0; 
     left: 0; 
     right: 0; 
@@ -47,10 +56,13 @@ body{
 
 
 #messages{
+    height: 100%;
+    overflow: auto;
     list-style-type: none; 
     margin: 0; 
     padding: 0; 
 }
+
 
 #messages > li{ 
     padding: 0.5rem 1rem; 
@@ -58,4 +70,29 @@ body{
 
 #messages > li:nth-child(odd){ 
     background: #efefef; 
+}
+
+#users{
+    background-color: #faebd7;
+    overflow: hidden;
+    /* border: black;
+    border-style: dashed; */
+}
+
+#users>h4{
+    text-align: center;
+    padding: 0.5rem 1rem;
+}
+
+#online--users{
+    height: calc(100% - 2rem);
+    overflow: auto;
+}
+
+#online--users > li{ 
+    padding: 0.25rem 1rem; 
+}
+
+#online--users > li:nth-child(odd){ 
+    background: #ffdaa8; 
 }

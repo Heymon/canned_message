@@ -72,13 +72,13 @@
 
         if (isConnecting) {
             console.log("user connected " + userInfo.userName);
-            const item2 = document.createElement('li');
-            item2.textContent = userInfo.userName;
-            item2.style.color = userInfo.colorHex;
-            usersList.appendChild(item2);//add the user to the list of online users on client
+            const item = document.createElement('li');
+            item.textContent = userInfo.userName;
+            item.style.color = userInfo.colorHex;
+            usersList.appendChild(item);//add the user to the list of online users on client
         } else {
             console.log("user disconnected " + userInfo.userName);
-            let onlineUsers = document.getElementById('onlineUsers').children;
+            const onlineUsers = document.getElementById('online--users').children;
             console.log(onlineUsers);
             for (let index = 0; index < onlineUsers.length; index++) {
                 if (onlineUsers[index].textContent === userInfo.userName) {
@@ -99,7 +99,7 @@
     var input = document.getElementById('input');
     console.log(input);
 
-    let usersList = document.getElementById('onlineUsers');
+    let usersList = document.getElementById('online--users');
     console.log(usersList);
 
     form.addEventListener('submit', function(e) {
@@ -122,6 +122,8 @@
             updateUsersList({userName: curValue.userName, colorHex: curValue.colorHex}, true);
         });
 
+        // TODO create a function to calculate the contrast ratio through relative luminace of both the user color & the background color
+        // TODO create function to check if the name is a duplicate
         //it sets user name
         ApiRequest.requestColor().then(json => { //by fetching random color from API
             console.log(json.name.value);
