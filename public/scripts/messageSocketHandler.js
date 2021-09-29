@@ -89,18 +89,40 @@
         }
     }
 
+    const fixInputHeight = (inputEl) =>{
+        inputEl.setAttribute("style", 'height:auto');
+        inputEl.setAttribute("style", `height:${inputEl.scrollHeight-6}px`);//-6 because of padding and margin
+    }
 
-    var socket = io();
+
+    let socket = io();
         
-    var messages = document.getElementById('messages');
+    const messages = document.getElementById('messages');
     console.log(messages);
-    var form = document.getElementById('form');
+    const form = document.getElementById('form');
     console.log(form);
-    var input = document.getElementById('input');
+    const input = document.getElementById('input');
     console.log(input);
-
-    let usersList = document.getElementById('online--users');
+    const usersList = document.getElementById('online--users');
     console.log(usersList);
+
+    input.addEventListener('input', (e) => {//automatically adjust height after new input
+        fixInputHeight(e.target);
+    })
+
+    input.addEventListener('keypress', (e) =>{//makes enter on textarea submit & enter+shift new linex
+        if (e.shiftKey && e.key === 'Enter') {
+        }
+        else if (e.key === 'Enter') {
+            e.preventDefault();
+            console.log(e.key)
+            // e.target.form.dispatchEvent(new Event('input', {cancelable: true})); 
+            e.target.form.dispatchEvent(new Event('submit', {cancelable: true}))
+            fixInputHeight(e.target);
+            
+            
+        }
+    })
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
