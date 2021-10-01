@@ -1,5 +1,6 @@
 //=====EXTERNAL IMPORTS
 const express = require('express');
+const cors = require('cors');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const app = express();
@@ -11,6 +12,7 @@ const server = http.createServer(app); // I assume that "http server" adds modul
 const db = require("./models")
 
 //====MIDDLEWARE
+app.use(cors());
 app.use(express.static(__dirname + "/public"));
 app.use(express.json()); //-JSON parsing
 dotenv.config()
