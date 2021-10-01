@@ -76,7 +76,12 @@ io.on('connection', (socket) =>{
   })
 
   socket.on('chat message', (msg) => {//when server receives message
-    io.emit('chat message', msg);// sends the message to everyone else
+    db.User.findOne({socketId: socket.id}, (err, foundUser) =>{
+      if(err) console.log("Error finding User: ", err);
+
+      if(foundUser === null) console.log("USER NOT FOUND")
+      io.emit('chat message', {userInfo: foundUser, msg: msg.msg});// sends the message to everyone else
+    })
     //socket.broadcast.emit('chat message', msg);// sends to the other people but not who sent
   });
 

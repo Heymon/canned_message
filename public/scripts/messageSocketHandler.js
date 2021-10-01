@@ -103,6 +103,7 @@
     }
 
     const addMessage = (msg, userInfo, isUser, isPrepend) => {
+        const lastMessage = messages.lastElementChild;
         // sets name on page
         let item = document.createElement('li');
         let subItem = document.createElement('span');
@@ -110,9 +111,15 @@
         subItem.style.color = userInfo.colorHex;
         item.textContent = msg;
 
-        if(isUser)item.setAttribute("class", "user--message");
-
         if (!isPrepend) {
+            if(isUser){
+                item.setAttribute("class", "user--message");
+                if (lastMessage.className === "user--message" && lastMessage.children[0].textContent === userInfo.userName) {
+                    // lastMessage.textContent = `${lastMessage.childNodes[0].textContent}\n${msg}`; 
+                    lastMessage.insertBefore(document.createTextNode(`\n${msg}`), lastMessage.children[0]);
+                    return
+                }
+            }
             item.appendChild(subItem);
             messages.appendChild(item);
         } else {
@@ -182,9 +189,9 @@
         e.preventDefault();
         if(input.value){
             if(localStorage.uif){
-                let userMsg = {msg: input.value, userInfo:{...JSON.parse(localStorage.uif)}};
-                console.log(userMsg);
-                socket.emit('chat message', userMsg);
+                // let userMsg = {msg: input.value, userInfo:{...JSON.parse(localStorage.uif)}};
+                // console.log(userMsg);
+                socket.emit('chat message', {msg: input.value});
                 input.value = '';
             }
         } 
