@@ -33,7 +33,7 @@
         }
     }
 
-    const baseURL = "https://canned-message.herokuapp.com/"
+    const baseURL = "https://canned-message.herokuapp.com"
 
     class AuthModel {
         static register = data => {
