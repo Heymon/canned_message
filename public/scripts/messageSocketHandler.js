@@ -23,17 +23,17 @@
             }).then(response => response.json());
         }
 
-        static requestName = () => {
+        static requestName = (apiKey) => {
             return fetch('https://randommer.io/api/Name?nameType=firstname&quantity=1',{
                 method: "GET",
                 headers: {
-                    "X-Api-Key": "06740e2146ad4bfdaa9bc239ea906140",// needs to be reseted because it is already saved in git
+                    "X-Api-Key": apiKey,
                 },
             }).then(response => response.json());
         }
     }
 
-    const baseURL = "http://localhost:3000";
+    const baseURL = "http://localhost:3000";//TODO change to real URL
 
     class AuthModel {
         static register = data => {
@@ -204,7 +204,8 @@
             console.log(json.name.value);
             let colorName = json.name.value;
             let colorHex = json.hex.value;
-            ApiRequest.requestName().then(json => { //by fetching random name from API
+            console.log(serverData.nameApiKey);
+            ApiRequest.requestName(serverData.nameApiKey).then(json => { //by fetching random name from API
                 console.log(json[0]);
                 let name = json[0];
                 let userName = `${colorName} ${name}`   //putting both fetches together
