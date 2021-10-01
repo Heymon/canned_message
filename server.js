@@ -89,9 +89,14 @@ io.on('connection', (socket) =>{
     db.User.findOneAndDelete({socketId: socket.id}, (err, deletedUser) =>{
       if(err) console.log("Error deleting User: ", err);
 
-      console.log(deletedUser, " checking for error");
-      console.log(deletedUser.userName, " logged out");
-      io.emit('user.disconnected', (deletedUser));
+      if (deletedUser) {
+        console.log(deletedUser, " checking for error");
+        console.log(deletedUser.userName, " logged out");
+        io.emit('user.disconnected', (deletedUser));
+      }else {
+        console.log("something went wrong");
+      }
+
     })
   });
 });
