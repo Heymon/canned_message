@@ -98,6 +98,6 @@ io.on('connection', (socket) =>{
 
 
 //the server port is is initialized to start listening here
-server.listen(3000, () => {
+server.listen(process.env.PORT, () => {
   console.log('listening on http://localhost:3000');
 });
