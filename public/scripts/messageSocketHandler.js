@@ -33,7 +33,7 @@
         }
     }
 
-    const baseURL = "https://canned-message.herokuapp.com"
+    const baseURL = "http://localhost:3000";
 
     class AuthModel {
         static register = data => {
