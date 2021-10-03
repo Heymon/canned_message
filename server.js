@@ -92,11 +92,10 @@ io.on('connection', (socket) =>{
       if(err) console.log("Error deleting User: ", err);
 
       if (deletedUser) {
-        console.log(deletedUser, " checking for error");
         console.log(deletedUser.userName, " logged out");
         io.emit('user.disconnected', (deletedUser));
       }else {
-        console.log("something went wrong");
+        console.log("Something went wrong; \n User wasn't properly loggout and/or deleted of Database");
       }
 
     })

@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1">
+    <title>Canned MEssage</title>
     <link rel="stylesheet" href="/styles/index.css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="/scripts/messageSocketHandler.js" defer></script>
   </head>
   <body>
     <div id="center">
-      <ul id="messages"></ul>
+      <ul id="messages">
+        <li>WELCOME TO CANNED MESSAGE!!<br>Talk to a stranger :)</li>
+      </ul>
       <div id="users">
         <h4>ONline USers</h4>
         <ul id="online--users"></ul>
       </div>
     </div>
     <form id="form" action="">
-        <textarea name="messageInput" id="input" cols="30" rows="1" maxlength="400"></textarea><button>Send</button>
+        <textarea name="messageInput" id="input" cols="14" rows="1" maxlength="400"></textarea><button>Send</button>
         <!-- <input id="input" autocomplete="off" /><button>Send</button> -->
     </form>
   </body>

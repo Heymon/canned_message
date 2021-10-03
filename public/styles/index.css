@@ -86,6 +86,8 @@ body{
 }
 
 #users{
+    display: flex;
+    flex-flow: column;
     background-color: #faebd7;
     overflow: hidden;
     /* border: black;
