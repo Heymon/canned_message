@@ -33,7 +33,7 @@
         }
     }
 
-    const baseURL = "https://canned-message.herokuapp.com"
+    const baseURL = "http://localhost:3000";
 
     class AuthModel {
         static register = data => {
@@ -152,7 +152,7 @@
 
     const fixInputHeight = (inputEl) =>{
         inputEl.setAttribute("style", 'height:auto');
-        inputEl.setAttribute("style", `height:${inputEl.scrollHeight-6}px`);//-6 because of padding and margin
+        inputEl.setAttribute("style", `height:${inputEl.scrollHeight-5}px`);//-6 because of padding and margin
     }
 
 
